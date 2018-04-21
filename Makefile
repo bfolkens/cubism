@@ -35,13 +35,8 @@ cubism.v1.js: \
 	@echo '})(this);' >> $@
 	@chmod a-w $@
 
-package.json: cubism.v1.js src/package.js
-	@rm -f $@
-	node src/package.js > $@
-	@chmod a-w $@
-
 clean:
-	rm -f cubism.v1.js cubism.v1.min.js package.json
+	rm -f cubism.v1.js cubism.v1.min.js
 
 test: all
 	@$(JS_TESTER)
