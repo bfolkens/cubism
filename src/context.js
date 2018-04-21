@@ -33,9 +33,7 @@ cubism.context = function() {
   context.start = function() {
     if(seek != 0) {
       event.prepare.call(context, start1, stop1, function(){
-        event.beforechange.call(context, start1, stop1);
-        event.change.call(context, start1, stop1);
-        event.focus.call(context, focus);  
+        context.refresh();
       });
     } else {
       // Realtime
@@ -52,9 +50,7 @@ cubism.context = function() {
 
         setTimeout(function() {
           scale.domain([start0 = start1, stop0 = stop1]);
-          event.beforechange.call(context, start1, stop1);
-          event.change.call(context, start1, stop1);
-          event.focus.call(context, focus);
+          context.refresh();
         }, clientDelay);
 
         timeout = setTimeout(prepare, step);
@@ -62,6 +58,12 @@ cubism.context = function() {
     }
     return context;
   };
+
+  context.refresh = function() {
+    event.beforechange.call(context, start1, stop1);
+    event.change.call(context, start1, stop1);
+    event.focus.call(context, focus);
+  }
 
   context.stop = function() {
     timeout = clearTimeout(timeout);
@@ -75,7 +77,7 @@ cubism.context = function() {
   context.seek = function(_) {
     if(!arguments.length) return seek;
     seek = +_;
-    return update().stop().start();
+    return update();
   };
 
   // Set or get the step interval in milliseconds.

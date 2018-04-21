@@ -72,10 +72,10 @@ cubism_contextPrototype.metric = function(request, name) {
         if(callback != null) callback();
       });
     } else {
-      var steps = Math.min(size, Math.round((start - start1) / step));
+      var steps = Math.min(size, Math.round((stop - start1) / step));
       if (!steps || fetching) return;
       fetching = true;
-      // Must be seeking backward... don't need to overlap since we are 
+      // Must be seeking backward... don't need to overlap since we are
       // not in realtime
       //steps = Math.min(size, steps + cubism_metricOverlap);
       var stop0 = new Date(+start1 + steps * step);
