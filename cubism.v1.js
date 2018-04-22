@@ -626,7 +626,8 @@ cubism_contextPrototype.metric = function(request, name) {
       fetching = true;
       steps = Math.min(size, steps + cubism_metricOverlap);
       var start0 = new Date(stop - steps * step);
-      request(start0, stop, step, function(error, data) {
+      var lastVal = data[data.length - 1];
+      request(start0, stop, step, lastVal, function(error, data) {
         fetching = false;
         if (error) return console.warn(error);
         var i = isFinite(start) ? Math.round((start0 - start) / step) : 0;
@@ -642,7 +643,8 @@ cubism_contextPrototype.metric = function(request, name) {
       // not in realtime
       //steps = Math.min(size, steps + cubism_metricOverlap);
       var stop0 = new Date(+start1 + steps * step);
-      request(start1, stop0, step, function(error, data) {
+      var lastVal = data[data.length - 1];
+      request(start1, stop0, step, lastVal, function(error, data) {
         fetching = false;
         if(error) return console.warn(error);
         prevalues = []
