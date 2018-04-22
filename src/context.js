@@ -63,6 +63,7 @@ cubism.context = function() {
     event.beforechange.call(context, start1, stop1);
     event.change.call(context, start1, stop1);
     event.focus.call(context, focus);
+    return context;
   }
 
   context.stop = function() {
