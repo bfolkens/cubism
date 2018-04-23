@@ -97,8 +97,7 @@ cubism_contextPrototype.metric = function(request, name) {
     if(start1 > start) {
       values.splice(0, Math.max(0, Math.min(size, Math.round((start1 - start) / step))));
     } else {
-      // console.log("values.splice(" + stop1 + ", " + Math.max(0, Math.min(size, Math.round((start - start1) / step))) + ")")
-      values.splice(stop1, Math.max(0, Math.min(size, Math.round((start - start1) / step))));
+      values.splice(size, size);
     }
     start = start1;
     stop = stop1;
