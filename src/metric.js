@@ -11,10 +11,6 @@ cubism_metricPrototype.valueAt = function() {
   return NaN;
 };
 
-cubism_metricPrototype.lastValue = function() {
-  return NaN;
-}
-
 cubism_metricPrototype.alias = function(name) {
   this.toString = function() { return name; };
   return this;
@@ -67,7 +63,8 @@ cubism_contextPrototype.metric = function(request, name) {
       fetching = true;
       steps = Math.min(size, steps + cubism_metricOverlap);
       var start0 = new Date(stop - steps * step);
-      request(start0, stop, step, function(error, data) {
+      var lastVal = values.slice(-steps)[0];
+      request(start0, stop, step, lastVal, function(error, data) {
         fetching = false;
         if (error) return console.warn(error);
         var i = isFinite(start) ? Math.round((start0 - start) / step) : 0;
@@ -79,11 +76,9 @@ cubism_contextPrototype.metric = function(request, name) {
       var steps = Math.min(size, Math.round((stop - start1) / step));
       if (!steps || fetching) return;
       fetching = true;
-      // Must be seeking backward... don't need to overlap since we are
-      // not in realtime
-      //steps = Math.min(size, steps + cubism_metricOverlap);
       var stop0 = new Date(+start1 + steps * step);
-      request(start1, stop0, step, function(error, data) {
+      var lastVal = values.slice(-1)[0];
+      request(start1, stop0, step, lastVal, function(error, data) {
         fetching = false;
         if(error) return console.warn(error);
         prevalues = []
@@ -99,10 +94,12 @@ cubism_contextPrototype.metric = function(request, name) {
   function beforechange(start1, stop1) {
     if (!isFinite(start)) start = start1;
 
-    if(start1 > start)
+    if(start1 > start) {
       values.splice(0, Math.max(0, Math.min(size, Math.round((start1 - start) / step))));
-    else
+    } else {
+      // console.log("values.splice(" + stop1 + ", " + Math.max(0, Math.min(size, Math.round((start - start1) / step))) + ")")
       values.splice(stop1, Math.max(0, Math.min(size, Math.round((start - start1) / step))));
+    }
     start = start1;
     stop = stop1;
   }
@@ -111,11 +108,6 @@ cubism_contextPrototype.metric = function(request, name) {
   metric.valueAt = function(i) {
     return values[i];
   };
-
-  //
-  metric.lastValue = function() {
-    return values[values.length - 1];
-  }
 
   //
   metric.shift = function(offset) {
